@@ -1,12 +1,32 @@
 import { Component } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
-  selector: 'app-signin',
+  selector: 'app-signup',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule,RouterLink],
   templateUrl: './signin.component.html',
-  styleUrl: './signin.component.css'
+  styleUrls: ['./signin.component.css'],
 })
-export class SigninComponent {
+export class SignupComponent {
+  signupForm: FormGroup;
 
+  constructor(private fb: FormBuilder,private auth:AuthService) {
+    this.signupForm = this.fb.group({
+      email: [''],
+      username: [''],
+      password: [''],
+      confirmPassword: [''],
+    });
+  }
+
+  onSubmit() {
+    this.auth.signup(this.signupForm.value)
+  }
+
+  onGoogleSignIn() {
+    console.log('Google Sign-In clicked');
+  }
 }

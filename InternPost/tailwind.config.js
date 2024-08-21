@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './src/**/*.{html,ts}', // Scan all HTML and TypeScript files in the src directory
+    "./src/**/*.{html,ts}", // Scan all HTML and TypeScript files in the src directory
   ],
   theme: {
     extend: {
@@ -16,8 +16,8 @@ module.exports = {
           800: "#3730a3",
           900: "#312e81",
         },
-        primary:{
-         0:"#191C24"
+        primary: {
+          0: "#191C24",
         },
         // Grey Colors
         grey: {
