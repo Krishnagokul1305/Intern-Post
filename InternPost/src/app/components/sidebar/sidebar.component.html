@@ -67,7 +67,7 @@
     </ul>
 
     <!-- Admin navbar -->
-    <ul class="space-y-4 text-lg" *ngIf="isAdmin">
+    <ul class="space-y-4 text-lg" *ngIf="!isUser">
       <li class="text-gray-400">
         <a
           routerLink="dashboard"
@@ -126,7 +126,7 @@
   </nav>
 
   <button
-    class="text-grey-400 bg-grey-800 w-full py-3 mt-auto mb-5"
+    class="text-grey-400 bg-grey-800 w-full py-3 mt-auto mb-5" (click)="logout()"
   >
     <div class="flex items-center justify-center gap-2">
       <svg
