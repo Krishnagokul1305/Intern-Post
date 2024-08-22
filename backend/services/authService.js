@@ -23,7 +23,12 @@ exports.signup = catchServiceError(async function (userData) {
   }
   const newUser = await userModel.create(userData);
 
-  return newUser;
+  return {
+    userID: newUser._id,
+    fullName: newUser.fullName,
+    role: newUser.role,
+    email: newUser.email,
+  };
 });
 
 exports.login = catchServiceError(async function (userData) {
@@ -42,7 +47,12 @@ exports.login = catchServiceError(async function (userData) {
     throw new Error("Invaild email or password");
   }
 
-  return user;
+  return {
+    userID: user._id,
+    fullName: user.fullName,
+    role: user.role,
+    email: user.email,
+  };
 });
 
 exports.forgotPassword = catchServiceError(async function (email) {

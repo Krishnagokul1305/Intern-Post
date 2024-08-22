@@ -3,11 +3,12 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { HttpClientModule } from '@angular/common/http';
+import { injectMutation, Mutation } from '@tanstack/angular-query-experimental';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink,HttpClientModule],
+  imports: [ReactiveFormsModule, RouterLink, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -26,36 +27,33 @@ export class LoginComponent {
     });
   }
 
+  onLogin = injectMutation(() => ({
+    mutationFn: (data) => this.auth.login(data).toPromise(),
+    onSuccess: (data: any) => {
+      console.log(data);
+      // Store user information in localStorage
+      localStorage.setItem(
+        'user',
+        JSON.stringify({ token: data.token, user: data.data })
+      );
+
+      // Redirect based on user role
+      if (data.data.role === 'user') {
+        console.log(data.data.role);
+        this.router.navigate(['/user/dashboard']);
+      } else if (data.data.role === 'admin') {
+        this.router.navigate(['/admin/dashboard']);
+      }
+    },
+  }));
+
   onSubmit(): any {
     if (!this.loginForm.value.email || !this.loginForm.value.password) {
-      return new Error('Please fill in all the fields');
+      throw new Error('Please fill in all the fields');
     }
-  
-    this.isLoading = true;
-  
-    this.auth.login(this.loginForm.value).subscribe(
-      (res) => {
-        console.log(res);
-        this.isLoading = false;
-  
-        // Store user information in localStorage
-        localStorage.setItem('user', JSON.stringify({ token: res.token, user: res.data }));
-  
-        // Redirect based on user role
-        if (res.data.role === 'user') {
-          console.log(res.data.role)
-          this.router.navigate(['/user/dashboard']);
-        } else if (res.data.role === 'admin') {
-          this.router.navigate(['/admin/dashboard']);
-        }
-      },
-      (err) => {
-        console.log(err);
-        this.isLoading = false;
-      }
-    );
+
+    this.onLogin.mutate(this.loginForm.value);
   }
-  
 
   onGoogleSignIn() {
     console.log('Google Sign-In clicked');

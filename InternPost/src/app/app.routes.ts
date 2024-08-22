@@ -3,6 +3,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth/auth.service';
+import {
+  provideAngularQuery,
+  QueryClient,
+} from '@tanstack/angular-query-experimental';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
@@ -17,7 +21,8 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [authGuard],
   },
 ];
@@ -25,6 +30,6 @@ export const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes), HttpClientModule],
   exports: [RouterModule],
-  providers: [AuthService],
+  providers: [AuthService, provideAngularQuery(new QueryClient())],
 })
 export class AppRoutingModule {}
