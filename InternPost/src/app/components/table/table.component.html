@@ -1,0 +1,18 @@
+<div class="overflow-x-auto mt-5">
+  <table class="min-w-full rounded-md overflow-hidden bg-grey-900">
+    <thead>
+      <tr
+        class="bg-grey-900 border-b uppercase tracking-wider font-semibold text-grey-200"
+      >
+        <ng-content select="[table-header]"></ng-content>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of data">
+        <ng-container
+          *ngTemplateOutlet="rowTemplate; context: { $implicit: item }"
+        ></ng-container>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
