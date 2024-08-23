@@ -10,10 +10,10 @@ import { AuthService } from '../../services/auth/auth.service';
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
-  isUser: boolean = false;
+  isUser: boolean = true;
   constructor(private auth:AuthService,private router:Router) {
-    const user: any = JSON.parse(localStorage.getItem('user') || '');
-    this.isUser = user.user.role == 'user';
+    // const user: any = JSON.parse(localStorage.getItem('user') || '');
+    // this.isUser = user.user.role == 'user';
   }
 
   logout(){

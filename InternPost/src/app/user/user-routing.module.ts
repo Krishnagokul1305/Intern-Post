@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { UploadsComponent } from './uploads/uploads.component';
 import { LayoutComponent } from '../components/layout/layout.component';
 import { authGuard } from '../guards/auth.guard';
+import { UserUpdateComponent } from '../components/user-update/user-update.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
         // canActivate: [authGuard],
       },
       { path: 'uploads', component: UploadsComponent },
+      { path: 'details', component: UserUpdateComponent },
     ],
   },
 ];

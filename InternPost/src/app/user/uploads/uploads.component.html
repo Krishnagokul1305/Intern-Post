@@ -1,1 +1,201 @@
-<p>uploads works!</p>
+<div class="px-6 py-5">
+  <h1 class="text-grey-300 text-xl font-bold">Upload Your Offers</h1>
+  <div>
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="mx-auto px-7 py-8 bg-grey-900 rounded-lg shadow-md space-y-4 mt-5 text-grey-400"
+    >
+      <div class="flex items-center gap-5">
+        <div class="flex flex-col w-full">
+          <label for="name" class="font-semibold">Name</label>
+          <input
+            id="name"
+            formControlName="name"
+            type="text"
+            class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          />
+        </div>
+
+        <div class="flex flex-col w-full">
+          <label for="rollNo" class="font-semibold">Roll No</label>
+          <input
+            id="rollNo"
+            formControlName="rollNo"
+            type="text"
+            class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-5">
+        <div class="flex flex-col w-full">
+          <label for="dob" class="font-semibold">Date of Birth</label>
+          <input
+            id="dob"
+            formControlName="dob"
+            type="date"
+            class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          />
+        </div>
+
+        <div class="flex flex-col w-full">
+          <label for="phoneNo" class="font-semibold">Phone No</label>
+          <input
+            id="phoneNo"
+            formControlName="phoneNo"
+            type="text"
+            class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col w-full">
+        <label for="workingAt" class="font-semibold"
+          >Currently Working At</label
+        >
+        <input
+          id="workingAt"
+          formControlName="workingAt"
+          type="text"
+          class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+        />
+      </div>
+
+      <div class="flex items-center gap-5">
+        <div class="flex flex-col w-full">
+          <label for="degree" class="font-semibold">Degree (Department)</label>
+          <input
+            id="degree"
+            formControlName="degree"
+            type="text"
+            class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          />
+        </div>
+
+        <div class="flex flex-col w-full">
+          <label for="numOffers" class="font-semibold">Number of Offers</label>
+          <input
+            id="numOffers"
+            formControlName="numOffers"
+            type="number"
+            class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+            (change)="onOffersChange()"
+          />
+        </div>
+      </div>
+      <div formArrayName="offers">
+        <div
+          *ngFor="let offer of offers.controls; let i = index"
+          [formGroupName]="i"
+          class="border-t border-gray-300 pt-4 mt-4 space-y-3"
+        >
+          <h3 class="font-semibold">Offer {{ i + 1 }}</h3>
+          <div class="flex items-center gap-5">
+            <div class="flex flex-col w-full">
+              <label for="companyName" class="">Company Name</label>
+              <input
+                [id]="'companyName' + i"
+                formControlName="companyName"
+                type="text"
+                class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+              />
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="companyType" class="">Company Type</label>
+              <select
+                [id]="'companyType' + i"
+                formControlName="companyType"
+                class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+              >
+                <option value="core">Core</option>
+                <option value="it">IT</option>
+                <option value="others">Others</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-5">
+            <div class="flex flex-col w-full">
+              <label for="joiningDate" class="">Joining Date</label>
+              <input
+                [id]="'joiningDate' + i"
+                formControlName="joiningDate"
+                type="date"
+                class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+              />
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="stipend" class="">Stipend</label>
+              <input
+                [id]="'stipend' + i"
+                formControlName="stipend"
+                type="text"
+                class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col w-full">
+            <label for="location" class="">Location</label>
+            <input
+              [id]="'location' + i"
+              formControlName="location"
+              type="text"
+              class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+            />
+          </div>
+
+          <div class="flex flex-col w-full">
+            <label for="internshipOfferLetter" class=""
+              >Internship Offer Letter</label
+            >
+            <input
+              [id]="'internshipOfferLetter' + i"
+              formControlName="internshipOfferLetter"
+              type="file"
+              class="mt-1 p-2 rounded-md bg-grey-700"
+            />
+          </div>
+
+          <div class="flex flex-col  w-full">
+            <label for="jobOfferLetter" class="">Job Offer Letter</label>
+            <input
+              [id]="'jobOfferLetter' + i"
+              formControlName="jobOfferLetter"
+              type="file"
+              class="mt-1 p-2 rounded-md bg-grey-700"
+            />
+          </div>
+
+          <div class="flex flex-col w-full">
+            <label for="letterOfIntend" class="">Letter of Intent</label>
+            <input
+              [id]="'letterOfIntend' + i"
+              formControlName="letterOfIntend"
+              type="file"
+              class="mt-1 p-2 rounded-md bg-grey-700"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 justify-end">
+        <button
+          type="submit"
+          class="bg-red-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+        >
+          cancel
+        </button>
+        <button
+          type="submit"
+          class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
