@@ -4,14 +4,16 @@ const app = express();
 
 const morgan = require("morgan");
 
-const cors=require("cors")
+const cors = require("cors");
 
 const authRoute = require("./route/authRoute");
+const userRoute = require("./route/userRoute");
 
 app.use(morgan("dev"));
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
-app.use("/auth",authRoute) 
+app.use("/auth", authRoute);
+app.use("/users", userRoute);
 
 module.exports = app;

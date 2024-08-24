@@ -1,25 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-user-update',
   templateUrl: './user-update.component.html',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
-  styleUrls: ['./user-update.component.css']
+  imports: [ReactiveFormsModule, CommonModule],
+  styleUrls: ['./user-update.component.css'],
 })
 export class UserUpdateComponent {
   updateForm: FormGroup;
+  user: any;
 
-
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private auth: AuthService) {
+    this.user = auth.getUserData().user;
     this.updateForm = this.fb.group({
-      email: [''],
-      username: [''],
-      department: [''],
-      image: [null] // For storing the file
+      email: [this.user.email],
+      fullName: [this.user.fullName],
+      image: [null],
+      phoneNo: [this.user.phoneNo],
     });
+
+    console.log(this.user);
   }
 
   fileName: string | null = null;

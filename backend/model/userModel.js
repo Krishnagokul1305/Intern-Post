@@ -12,6 +12,23 @@ const userSchema = mongoose.Schema(
       required: [true, "user must have email"],
       unique: true,
     },
+    RegNo: {
+      type: String,
+      required: [true, "user must have reg no"],
+      unique: true,
+    },
+    batch: {
+      type: String,
+    },
+    dep: {
+      type: String,
+      required: true,
+    },
+    phoneNo: {
+      type: String,
+      required: [true, "user must have Phone number"],
+      unique: true,
+    },
     password: {
       type: String,
       required: [true, "user must have password"],
@@ -29,8 +46,8 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: ["student", "faculty"],
+      default: "student",
     },
     avatar: String,
     passwordChangedAt: Date,
@@ -54,10 +71,11 @@ userSchema.pre("save", async function (next) {
 
   // Set confirmPassword to undefined to not store it in the database
   this.confirmPassword = undefined;
-
+  console.log("hello");
   // If the document is not new and the password has been modified, set passwordChangedAt
   if (!this.isNew) {
     this.passwordChangedAt = Date.now() - 1000;
+    console.log(this.passwordChangedAt);
   }
 
   next();

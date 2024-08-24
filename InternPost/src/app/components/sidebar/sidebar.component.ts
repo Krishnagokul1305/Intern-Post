@@ -11,14 +11,13 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class SidebarComponent {
   isUser: boolean = true;
-  constructor(private auth:AuthService,private router:Router) {
-    // const user: any = JSON.parse(localStorage.getItem('user') || '');
-    // this.isUser = user.user.role == 'user';
+  constructor(private auth: AuthService, private router: Router) {
+    const user: any = JSON.parse(localStorage.getItem('user') || '');
+    this.isUser = user.user.role == 'user';
   }
 
-  logout(){
-    this.auth.logout()
-    this.router.navigate(["/auth/login"])
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['/auth/login']);
   }
-
 }

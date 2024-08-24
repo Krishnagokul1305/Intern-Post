@@ -3,7 +3,6 @@ const { createToken } = require("../utils/jwtProvider");
 
 exports.signup = async (req, res, next) => {
   try {
-    // console.log(req.body);
     const newUser = await authService.signup(req.body);
     const token = createToken(newUser.id);
     res.status(201).json({

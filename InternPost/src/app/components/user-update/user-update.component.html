@@ -10,10 +10,10 @@
         <div class="space-y-2">
           <label for="name" class="block text-grey-400">Name</label>
           <input
-            value="admin"
+            [value]="user.fullName"
             type="text"
             id="name"
-            formControlName="name"
+            formControlName="fullName"
             class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
           />
         </div>
@@ -37,7 +37,7 @@
             type="text"
             value="987654321"
             id="phone_no"
-            formControlName="phone_no"
+            formControlName="phoneNo"
             class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
           />
         </div>

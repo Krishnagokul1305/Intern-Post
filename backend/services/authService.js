@@ -5,7 +5,8 @@ const crypto = require("crypto");
 
 exports.signup = catchServiceError(async function (userData) {
   console.log(userData);
-  const { fullName, password, email, confirmPassword } = userData;
+  const { fullName, password, email, confirmPassword, RegNo, phoneNo, dep } =
+    userData;
   if (!fullName) {
     throw new Error("fullName must be filled");
   }
@@ -21,14 +22,28 @@ exports.signup = catchServiceError(async function (userData) {
   if (!confirmPassword) {
     throw new Error("confirmPassword must be filled");
   }
+
+  if (!RegNo) {
+    throw new Error("RegNo must be filled");
+  }
+
+  if (!phoneNo) {
+    throw new Error("phoneNo must be filled");
+  }
+
+  if (!dep) {
+    throw new Error("departement must be filled");
+  }
+
+  if (!userData.role) {
+    if (!userData.batch) {
+      throw new Error("batch must be filled");
+    }
+  }
+
   const newUser = await userModel.create(userData);
 
-  return {
-    userID: newUser._id,
-    fullName: newUser.fullName,
-    role: newUser.role,
-    email: newUser.email,
-  };
+  return newUser;
 });
 
 exports.login = catchServiceError(async function (userData) {
@@ -42,17 +57,13 @@ exports.login = catchServiceError(async function (userData) {
 
   const user = await userModel.findOne({ email }).select("+password");
 
+  console.log(user, await user.isValidPassword(password, user.password));
   //   check if the user exists and the password is same as the password in db
   if (!user || !(await user.isValidPassword(password, user.password))) {
     throw new Error("Invaild email or password");
   }
 
-  return {
-    userID: user._id,
-    fullName: user.fullName,
-    role: user.role,
-    email: user.email,
-  };
+  return user;
 });
 
 exports.forgotPassword = catchServiceError(async function (email) {

@@ -37,6 +37,9 @@ export class LoginComponent {
         JSON.stringify({ token: data.token, user: data.data })
       );
 
+      console.log(data);
+      this.auth.user = data.data;
+
       // Redirect based on user role
       if (data.data.role === 'user') {
         console.log(data.data.role);

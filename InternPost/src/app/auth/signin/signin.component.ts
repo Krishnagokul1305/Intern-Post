@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -7,24 +12,27 @@ import { HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule,RouterLink,HttpClientModule],
+  imports: [ReactiveFormsModule, RouterLink, HttpClientModule],
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css'],
 })
 export class SignupComponent {
   signupForm: FormGroup;
 
-  constructor(private fb: FormBuilder,private auth:AuthService) {
+  constructor(private fb: FormBuilder, private auth: AuthService) {
     this.signupForm = this.fb.group({
       email: [''],
-      username: [''],
+      fullName: [''],
       password: [''],
+      phoneNo: [''],
       confirmPassword: [''],
+      RegNo: [''],
+      dep: [''],
     });
   }
 
   onSubmit() {
-    this.auth.signup(this.signupForm.value)
+    this.auth.signup(this.signupForm.value);
   }
 
   onGoogleSignIn() {

@@ -1,6 +1,5 @@
 <header class="h-[50px] flex items-center px-14">
   <div class="ms-auto flex items-center gap-5">
-
     <div
       class="cursor-pointer bg-grey-800 flex items-center justify-center rounded-full w-[50px] h-[50px]"
       (click)="toggleTheme()"
@@ -23,8 +22,10 @@
         class="h-full w-full object-contain"
       />
       <div class="space-y-1">
-        <h1 class="capitalize font-bold text-grey-300">krishna</h1>
-        <p class="text-xs text-grey-400">Admin</p>
+        <h1 class="capitalize font-bold text-grey-300 text-lg">
+          {{ user.fullName }}
+        </h1>
+        <p class="text-xs text-grey-400 capitalize">{{ user.role }}</p>
       </div>
     </div>
   </div>

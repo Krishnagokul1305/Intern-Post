@@ -9,14 +9,14 @@
         <h1
           class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center"
         >
-          Sign In
+          Login In
         </h1>
         <form
           [formGroup]="loginForm"
           (ngSubmit)="onSubmit()"
           class="space-y-4 md:space-y-8"
         >
-          <div >
+          <div>
             <label
               for="email"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -67,11 +67,11 @@
             >
           </div>
           <button
-          [disabled]="isLoading"
+            [disabled]="isLoading"
             type="submit"
             class="w-full text-white bg-customBlue-700 focus:ring-1 focus:outline-none focus:ring-customBlue-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
-            Sign in
+            login in
           </button>
           <!-- <button
             type="button"

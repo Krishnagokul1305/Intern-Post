@@ -1,8 +1,9 @@
-const userModel = require("../models/userModel");
+const userModel = require("../model/userModel");
 const { decodeToken } = require("../utils/jwtProvider");
 
 exports.isAuthenticated = async (req, res, next) => {
   // check if there is token
+  console.log("hello");
   if (
     !req.headers.authorization &&
     !req.headers?.authorization?.split(" ")[1]
@@ -21,6 +22,7 @@ exports.isAuthenticated = async (req, res, next) => {
   if (!user) {
     return res.status(404).send({ error: "no user found" });
   }
+  console.log(user.hasChangedPassword(decoded.iat));
 
   // check if the user changed the password after token created
   if (user.hasChangedPassword(decoded.iat)) {
