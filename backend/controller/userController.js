@@ -1,85 +1,69 @@
 const authService = require("../services/authService");
 const userService = require("../services/userService");
 const { createToken } = require("../utils/jwtProvider");
+const catchControllerError = require("../utils/asyncControllerError");
+const AppError = require("../utils/AppError");
 
-exports.getAllUsers = async (req, res, next) => {
-  try {
-    const users = await userService.getUsers();
-    res.status(200).json({
-      status: "success",
-      results: users.length,
-      data: users,
-    });
-  } catch (error) {
-    res.status(500).send({ error: `Error : ${error.message}` });
+exports.getAllUsers = catchControllerError(async (req, res, next) => {
+  const users = await userService.getUsers();
+  res.status(200).json({
+    status: "success",
+    results: users.length,
+    data: users,
+  });
+});
+
+exports.getUserById = catchControllerError(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await userService.getUser(id);
+  res.status(200).json({
+    status: "success",
+    data: user,
+  });
+});
+
+exports.createUser = catchControllerError(async (req, res, next) => {
+  const newUser = await authService.signup(req.body);
+  res.status(201).json({
+    status: "success",
+    data: newUser,
+  });
+});
+
+exports.updateUser = catchControllerError(async (req, res, next) => {
+  if (req.body.password) {
+    return next(new AppError("This route is not for updating password", 400));
   }
-};
+  const updatedUser = await userService.updateUser({
+    id: req.user.id,
+    updateData: req.body,
+  });
+  res.status(200).json({
+    status: "success",
+    data: updatedUser,
+  });
+});
 
-exports.getUserById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    console.log(id);
-    const user = await userService.getUser(id);
-    res.status(200).json({
-      status: "success",
-      data: user,
-    });
-  } catch (error) {
-    res.status(500).send({ error: `Error : ${error.message}` });
-  }
-};
+exports.updatePassword = catchControllerError(async (req, res, next) => {
+  const updatedUser = await userService.updateUserPassword({
+    user: req.user,
+    newPassword: req.body.newPassword,
+    currentPassword: req.body.currentPassword,
+    confirmPassword: req.body.newPassword,
+  });
 
-exports.createUser = async (req, res, next) => {
-  try {
-    const newUser = await authService.signup(req.body);
-    res.status(201).json({
-      status: "success",
-      data: newUser,
-    });
-  } catch (error) {
-    res.status(500).send({ error: `Error : ${error.message}` });
-  }
-};
+  const token = createToken(updatedUser.id);
+  res.status(200).json({
+    status: "success",
+    token,
+    data: updatedUser,
+  });
+});
 
-exports.updateUser = async (req, res, next) => {
-  try {
-    if (req.body.password) {
-      throw new Error("this route is not for updating password");
-    }
-    const updatedUser = await userService.updateUser({
-      id: req.user.id,
-      updateData: req.body,
-    });
-    res.status(200).json({
-      status: "success",
-      data: updatedUser,
-    });
-  } catch (error) {
-    res.status(500).send({ error: `Error : ${error.message}` });
-  }
-};
-
-exports.updatePassword = async (req, res, next) => {
-  try {
-    const updatedUser = await userService.updateUserPassword({
-      user: req.user,
-      newPassword: req.body.newPassword,
-      currentPassword: req.body.currentPassword,
-      confirmPassword: req.body.newPassword,
-    });
-
-    const token = createToken(updatedUser.id);
-    res.status(200).json({
-      status: "success",
-      token,
-      data: updatedUser,
-    });
-  } catch (error) {
-    res.status(500).send({ error: `Error : ${error.message}` });
-  }
-};
-
-exports.deleteUser = async (req, res, next) => {
-  try {
-  } catch (err) {}
-};
+exports.deleteUser = catchControllerError(async (req, res, next) => {
+  await userService.deleteUser(req.user.id);
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});

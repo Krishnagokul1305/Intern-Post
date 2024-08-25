@@ -2,65 +2,58 @@ const userModel = require("../model/userModel");
 const catchServiceError = require("../utils/asyncServiceErrorHandler");
 const validator = require("validator");
 const crypto = require("crypto");
+const AppError = require("../utils/AppError");
 
 exports.signup = catchServiceError(async function (userData) {
-  console.log(userData);
   const { fullName, password, email, confirmPassword, RegNo, phoneNo, dep } =
     userData;
+
   if (!fullName) {
-    throw new Error("fullName must be filled");
+    throw new AppError("Full name must be filled", 400);
   }
   if (!password) {
-    throw new Error("password must be filled");
+    throw new AppError("Password must be filled", 400);
   }
-  if (!email && validator.isEmail(email)) {
-    throw new Error("email must be filled");
+  if (!email) {
+    throw new AppError("Email must be filled", 400);
   }
   if (!validator.isEmail(email)) {
-    throw new Error("Invalid email");
+    throw new AppError("Invalid email", 400);
   }
   if (!confirmPassword) {
-    throw new Error("confirmPassword must be filled");
+    throw new AppError("Confirm password must be filled", 400);
   }
-
   if (!RegNo) {
-    throw new Error("RegNo must be filled");
+    throw new AppError("Registration number must be filled", 400);
   }
-
   if (!phoneNo) {
-    throw new Error("phoneNo must be filled");
+    throw new AppError("Phone number must be filled", 400);
   }
-
   if (!dep) {
-    throw new Error("departement must be filled");
+    throw new AppError("Department must be filled", 400);
   }
-
-  if (!userData.role) {
-    if (!userData.batch) {
-      throw new Error("batch must be filled");
-    }
+  if (!userData.role && !userData.batch) {
+    throw new AppError("Batch must be filled", 400);
   }
 
   const newUser = await userModel.create(userData);
-
   return newUser;
 });
 
 exports.login = catchServiceError(async function (userData) {
   const { email, password } = userData;
+
   if (!email) {
-    throw new Error("email must be filled");
+    throw new AppError("Email must be filled", 400);
   }
   if (!password) {
-    throw new Error("password must be filled");
+    throw new AppError("Password must be filled", 400);
   }
 
   const user = await userModel.findOne({ email }).select("+password");
 
-  console.log(user, await user.isValidPassword(password, user.password));
-  //   check if the user exists and the password is same as the password in db
   if (!user || !(await user.isValidPassword(password, user.password))) {
-    throw new Error("Invaild email or password");
+    throw new AppError("Invalid email or password", 401);
   }
 
   return user;
@@ -68,12 +61,13 @@ exports.login = catchServiceError(async function (userData) {
 
 exports.forgotPassword = catchServiceError(async function (email) {
   if (!email) {
-    throw new Error("please provide email");
+    throw new AppError("Please provide an email", 400);
   }
+
   const user = await userModel.findOne({ email });
 
   if (!user) {
-    throw new Error("no user found");
+    throw new AppError("No user found with this email", 404);
   }
 
   const resetToken = crypto.randomBytes(32).toString("hex");
@@ -96,24 +90,23 @@ exports.resetPassword = catchServiceError(async function ({
   confirmPassword,
   newPassword,
 }) {
-  console.log(resetToken, confirmPassword, newPassword);
-  // get the token that is sent as a param in the url
   if (!resetToken) {
-    throw new Error("please provide a reset token");
+    throw new AppError("Please provide a reset token", 400);
   }
-  // the token is encrypted in the db so encrypt the token
+
   const encryptedToken = crypto
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
 
-  // search for the user with the token in the db
-  const user = await userModel.findOne({ passwordResetToken: encryptedToken });
-  if (!user) {
-    throw new Error("user not found");
-  }
+  const user = await userModel.findOne({
+    passwordResetToken: encryptedToken,
+    passwordExpireTime: { $gt: Date.now() },
+  });
 
-  // if user exists save the document with new password with save method to enable validation
+  if (!user) {
+    throw new AppError("Token is invalid or has expired", 400);
+  }
 
   user.password = newPassword;
   user.confirmPassword = confirmPassword;

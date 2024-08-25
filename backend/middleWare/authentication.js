@@ -1,48 +1,46 @@
 const userModel = require("../model/userModel");
 const { decodeToken } = require("../utils/jwtProvider");
 
-exports.isAuthenticated = async (req, res, next) => {
-  // check if there is token
-  console.log("hello");
-  if (
-    !req.headers.authorization &&
-    !req.headers?.authorization?.split(" ")[1]
-  ) {
-    return res
-      .status(400)
-      .send({ error: "please provide authorization token" });
+const AppError = require("../utils/AppError"); // Import the AppError class
+const catchControllerError = require("../utils/asyncControllerError"); // Import the catchControllerError function
+
+exports.isAuthenticated = catchControllerError(async (req, res, next) => {
+  // Check if there is a token
+  if (!req.headers.authorization || !req.headers.authorization.split(" ")[1]) {
+    return next(new AppError("Please provide authorization token", 400));
   }
 
-  // verify the token
+  // Verify the token
   const token = req.headers.authorization.split(" ")[1];
   const decoded = decodeToken(token);
 
-  // get the user from the db
+  // Get the user from the DB
   const user = await userModel.findById(decoded.id).select("+password");
   if (!user) {
-    return res.status(404).send({ error: "no user found" });
+    return next(new AppError("No user found", 404));
   }
-  console.log(user.hasChangedPassword(decoded.iat));
 
-  // check if the user changed the password after token created
+  // Check if the user changed the password after the token was created
   if (user.hasChangedPassword(decoded.iat)) {
-    return res.status(404).send({
-      error: "user recently changed the password Please login again !",
-    });
+    return next(
+      new AppError(
+        "User recently changed the password. Please login again!",
+        401
+      )
+    );
   }
 
   req.user = user;
   next();
-};
+});
 
-exports.isAuthorized =
-  (...authRoles) =>
-  async (req, res, next) => {
+exports.isAuthorized = (...authRoles) =>
+  catchControllerError(async (req, res, next) => {
     if (!authRoles.includes(req.user.role)) {
-      return res.status(401).send({
-        error: "you are not authorized to access this route",
-      });
+      return next(
+        new AppError("You are not authorized to access this route", 401)
+      );
     }
 
     next();
-  };
+  });
