@@ -20,9 +20,10 @@ exports.updateUserPassword = catchServiceError(
     if (!(await user.isValidPassword(currentPassword, user.password))) {
       throw new AppError("Invalid current password", 400);
     }
+
     user.password = newPassword;
     user.confirmPassword = confirmPassword;
-    const updatedUser = await user.save();
+    const updatedUser = await user.save({ validateBeforeSave: false });
     return updatedUser;
   }
 );

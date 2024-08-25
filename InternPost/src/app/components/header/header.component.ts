@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -11,9 +12,8 @@ export class HeaderComponent {
 
   user: any;
 
-  constructor() {
-    const user: any = JSON.parse(localStorage.getItem('user') || '');
-    this.user = user.user;
+  constructor(private auth: AuthService) {
+    this.user = auth.getUserData();
   }
 
   toggleTheme(): void {

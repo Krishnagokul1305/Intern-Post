@@ -45,13 +45,13 @@ exports.updateUser = catchControllerError(async (req, res, next) => {
 });
 
 exports.updatePassword = catchControllerError(async (req, res, next) => {
+  console.log(req.body);
   const updatedUser = await userService.updateUserPassword({
     user: req.user,
     newPassword: req.body.newPassword,
     currentPassword: req.body.currentPassword,
     confirmPassword: req.body.newPassword,
   });
-
   const token = createToken(updatedUser.id);
   res.status(200).json({
     status: "success",

@@ -3,18 +3,27 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { HttpClientModule } from '@angular/common/http';
-import { injectMutation, Mutation } from '@tanstack/angular-query-experimental';
+import { injectMutation } from '@tanstack/angular-query-experimental';
+import { CommonModule } from '@angular/common';
+import { SpinnerMiniComponent } from '../../components/spinner-mini/spinner-mini.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, HttpClientModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    HttpClientModule,
+    CommonModule,
+    SpinnerMiniComponent,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
   loginForm: FormGroup;
   isLoading: boolean = false;
+  error: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -29,24 +38,31 @@ export class LoginComponent {
 
   onLogin = injectMutation(() => ({
     mutationFn: (data) => this.auth.login(data).toPromise(),
+    onMutate: () => {
+      this.error = '';
+      this.isLoading = true;
+    },
     onSuccess: (data: any) => {
-      console.log(data);
-      // Store user information in localStorage
+      this.isLoading = false;
       localStorage.setItem(
         'user',
-        JSON.stringify({ token: data.token, user: data.data })
+        JSON.stringify({ user: data.data })
       );
-
-      console.log(data);
+      localStorage.setItem(
+        'token',
+        JSON.stringify({  token: data.token })
+      );
+     
       this.auth.user = data.data;
-
-      // Redirect based on user role
-      if (data.data.role === 'user') {
-        console.log(data.data.role);
+      if (data.data.role === 'student') {
         this.router.navigate(['/user/dashboard']);
       } else if (data.data.role === 'admin') {
         this.router.navigate(['/admin/dashboard']);
       }
+    },
+    onError: (err) => {
+      this.isLoading = false;
+      this.error = err.message;
     },
   }));
 
@@ -54,7 +70,6 @@ export class LoginComponent {
     if (!this.loginForm.value.email || !this.loginForm.value.password) {
       throw new Error('Please fill in all the fields');
     }
-
     this.onLogin.mutate(this.loginForm.value);
   }
 

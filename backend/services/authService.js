@@ -7,7 +7,7 @@ const AppError = require("../utils/AppError");
 exports.signup = catchServiceError(async function (userData) {
   const { fullName, password, email, confirmPassword, RegNo, phoneNo, dep } =
     userData;
-
+  console.log(userData);
   if (!fullName) {
     throw new AppError("Full name must be filled", 400);
   }
@@ -32,7 +32,7 @@ exports.signup = catchServiceError(async function (userData) {
   if (!dep) {
     throw new AppError("Department must be filled", 400);
   }
-  if (!userData.role && !userData.batch) {
+  if (userData.role == "student" && !userData.batch) {
     throw new AppError("Batch must be filled", 400);
   }
 

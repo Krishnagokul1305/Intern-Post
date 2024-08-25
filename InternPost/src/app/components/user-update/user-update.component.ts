@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
+import { injectMutation } from '@tanstack/angular-query-experimental';
 
 @Component({
   selector: 'app-user-update',
@@ -12,26 +13,47 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class UserUpdateComponent {
   updateForm: FormGroup;
+  passwordForm: FormGroup;
   user: any;
+  fileName: string | null = null;
+  isLoading: boolean = false;
+  isPasswordError:boolean=false
 
   constructor(private fb: FormBuilder, private auth: AuthService) {
-    this.user = auth.getUserData().user;
+    this.user = auth.getUserData();
+    
     this.updateForm = this.fb.group({
-      email: [this.user.email],
-      fullName: [this.user.fullName],
-      image: [null],
-      phoneNo: [this.user.phoneNo],
+      email: [this.user.email, [Validators.required, Validators.email]],
+      fullName: [this.user.fullName, [Validators.required, Validators.minLength(3)]],
+      avatar: [null],
+      phoneNo: [
+        this.user.phoneNo,
+        [
+          Validators.required,
+          Validators.pattern('^((\\+91-?)|0)?[0-9]{10}$'),
+        ],
+      ],
     });
 
-    console.log(this.user);
+    this.passwordForm = this.fb.group({
+      old_password: ['', [Validators.required, Validators.minLength(6)]],
+      new_password: ['', [Validators.required, Validators.minLength(6)]],
+    });
   }
 
-  fileName: string | null = null;
-
+  // File handling methods remain the same
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.fileName = input.files[0].name;
+      const file = input.files[0];
+      this.fileName = file.name;
+
+      this.updateForm.patchValue({
+        avatar: file,
+      });
+
+      this.updateForm.get('avatar')?.markAsDirty();
+      this.updateForm.get('avatar')?.markAsTouched();
     }
   }
 
@@ -41,22 +63,85 @@ export class UserUpdateComponent {
     if (input) {
       input.value = '';
     }
+
+    this.updateForm.patchValue({
+      avatar: null,
+    });
+
+    this.updateForm.get('avatar')?.markAsPristine();
+    this.updateForm.get('avatar')?.markAsUntouched();
   }
 
-  onSubmit() {
-    const formData = new FormData();
-    formData.append('email', this.updateForm.get('email')?.value);
-    formData.append('username', this.updateForm.get('username')?.value);
-    formData.append('department', this.updateForm.get('department')?.value);
+  // Mutation functions remain the same
+  updateUser = injectMutation(() => ({
+    mutationFn: (data: FormData) =>
+      this.auth.updateUserDetails(data).toPromise(),
+    onMutate: () => {
+      this.isLoading = true;
+    },
+    onSuccess: (data: any) => {
+      this.isLoading = false;
+      localStorage.setItem('user', JSON.stringify({ user: data.data }));
+    },
+    onError: (err) => {
+      this.isLoading = false;
+    },
+  }));
 
-    const imageFile = this.updateForm.get('image')?.value;
-    if (imageFile) {
-      formData.append('image', imageFile);
+  updatePassword = injectMutation(() => ({
+    mutationFn: (data: any) => this.auth.updateUserPassword(data).toPromise(),
+    onMutate: () => {
+      this.isLoading = true;
+    },
+    onSuccess: (data: any) => {
+      this.isLoading = false;
+      console.log(data);
+      localStorage.setItem('token', JSON.stringify({ token: data.token }));
+    },
+    onError: (err) => {
+      this.isLoading = false;
+      console.log(err);
+    },
+  }));
+
+  userDetailsUpdate() {
+    if (this.updateForm.invalid) {
+      this.updateForm.markAllAsTouched();
+      return;
     }
 
-    // Example: Send formData to your backend API to update the user
-    // this.http.post('/api/user/update', formData).subscribe(response => {
-    //   console.log('User updated successfully');
-    // });
+    const formData = new FormData();
+    formData.append('email', this.updateForm.get('email')?.value);
+    formData.append('fullName', this.updateForm.get('fullName')?.value);
+    formData.append('phoneNo', this.updateForm.get('phoneNo')?.value);
+
+    const avatarFile = this.updateForm.get('avatar')?.value;
+    if (avatarFile) {
+      formData.append('avatar', avatarFile);
+    }
+
+    if (
+      this.updateForm.value.email === this.user.email &&
+      this.updateForm.value.fullName === this.user.fullName &&
+      this.updateForm.value.phoneNo === this.user.phoneNo
+    ) {
+      return;
+    }
+
+    this.updateUser.mutate(formData);
+  }
+
+  userPasswordUpdate() {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    const data = {
+      newPassword: this.passwordForm.value.new_password,
+      currentPassword: this.passwordForm.value.old_password,
+    };
+
+    this.updatePassword.mutate(data);
   }
 }

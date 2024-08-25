@@ -1,24 +1,31 @@
-<section class="bg-grey-900 flex">
-  <div><img src="" alt="" /></div>
+<section class="bg-grey-900 flex h-screen">
+  <!-- Left side (Image) -->
+  <div class="basis-[50%] h-full">
+    <img
+      src="https://png.pngtree.com/thumb_back/fh260/background/20240726/pngtree-woman-wearing-graduation-cap-with-blurred-city-background-at-sunset-image_15996971.jpg"
+      alt=""
+      class="w-full h-full object-cover"
+    />
+  </div>
 
+  <!-- Right side (Form) -->
   <div
-    class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
+    class="flex flex-col items-center justify-center mx-auto h-full w-full basis-[55%] px-5 py-5"
   >
-    <div
-      class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
-    >
-      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-        <h1
-          class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center"
-        >
-          Sign Up
-        </h1>
-        <form
-          [formGroup]="signupForm"
-          (ngSubmit)="onSubmit()"
-          class="space-y-4 md:space-y-8"
-        >
-          <div>
+    <div class="p-6 space-y-5 md:space-y-7 sm:p-8 w-full">
+      <h1
+        class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center"
+      >
+        Sign Up
+      </h1>
+      <form
+        [formGroup]="signupForm"
+        (ngSubmit)="onSubmit()"
+        class="space-y-4 md:space-y-8"
+      >
+        <!-- Email -->
+        <div class="flex items-center gap-5">
+          <div class="w-full">
             <label
               for="email"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -28,103 +35,145 @@
               type="email"
               id="email"
               formControlName="email"
-              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg  focus:outline-none focus:ring focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="user@email.com"
             />
           </div>
-          <div>
+
+          <!-- Full Name -->
+          <div class="w-full">
             <label
-              for="username"
+              for="fullName"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >Username</label
+              >Full Name</label
             >
             <input
               type="text"
-              id="username"
+              id="fullName"
               formControlName="fullName"
-              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="your username"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg  focus:outline-none focus:ring focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Full Name"
             />
           </div>
-          <div class="flex gap-4">
-            <div>
-              <label
-                for="batch"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Batch</label
-              >
-              <input
-                type="text"
-                id="batch"
-                formControlName="batch"
-                placeholder="2024"
-                class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label
-                for="Departement"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Departement</label
-              >
-              <input
-                type="text"
-                id="dep"
-                formControlName="dep"
-                placeholder="Departement"
-                class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              />
-            </div>
-          </div>
+        </div>
 
-          <div class="flex gap-4">
-            <div>
-              <label
-                for="password"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Password</label
-              >
-              <!-- phoneNo -->
-              <input
-                type="password"
-                id="password"
-                formControlName="password"
-                placeholder="••••••••"
-                class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label
-                for="confirmPassword"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Confirm Password</label
-              >
-              <input
-                type="password"
-                id="confirmPassword"
-                formControlName="confirmPassword"
-                placeholder="••••••••"
-                class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full text-white bg-customBlue-700 focus:ring-1 focus:outline-none focus:ring-customBlue-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          >
-            Sign Up
-          </button>
-          <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-            Already have an account?
-            <a
-              routerLink="/auth/login"
-              class="font-bold underline text-primary-600 hover:underline dark:text-primary-500"
-              >Sign In</a
+        <!-- Phone Number -->
+        <div class="flex items-center gap-5">
+          <div class="w-full">
+            <label
+              for="phoneNo"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Phone Number</label
             >
-          </p>
-        </form>
-      </div>
+            <input
+              type="text"
+              id="phoneNo"
+              formControlName="phoneNo"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg  focus:outline-none focus:ring focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Phone Number"
+            />
+          </div>
+
+          <div class="w-full">
+            <label
+              for="RegNo"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Reg No</label
+            >
+            <input
+              type="text"
+              id="RegNo"
+              formControlName="RegNo"
+              placeholder="Registration Number"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg  focus:outline-none focus:ring focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+
+        <div class="flex items-center gap-5">
+        <!-- Batch -->
+        <div class="w-full">
+          <label
+            for="batch"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Batch</label
+          >
+          <input
+            type="text"
+            id="batch"
+            formControlName="batch"
+            placeholder="2024"
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg  focus:outline-none focus:ring focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Department -->
+        <div class="w-full">
+          <label
+            for="dep"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Department</label
+          >
+          <input
+            type="text"
+            id="dep"
+            formControlName="dep"
+            placeholder="Department"
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg  focus:outline-none focus:ring focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          />
+        </div>
+        </div>
+
+        <!-- Registration Number -->
+
+        <!-- Password -->
+        <div class="flex gap-4">
+          <div class="w-full">
+            <label
+              for="password"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="password"
+              formControlName="password"
+              placeholder="••••••••"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg  focus:outline-none focus:ring focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            />
+          </div>
+          <div class="w-full">
+            <label
+              for="confirmPassword"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Confirm Password</label
+            >
+            <input
+              type="password"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              placeholder="••••••••"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg  focus:outline-none focus:ring focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full text-white bg-customBlue-700 focus:ring-1 focus:outline-none focus:ring-customBlue-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
+          Sign Up
+        </button>
+        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+          Already have an account?
+          <a
+            routerLink="/auth/login"
+            class="font-bold underline text-primary-600 hover:underline dark:text-primary-500"
+            >Sign In</a
+          >
+        </p>
+      </form>
     </div>
   </div>
 </section>
