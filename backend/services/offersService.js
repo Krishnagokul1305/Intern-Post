@@ -2,13 +2,12 @@ const catchServiceError = require("../utils/asyncServiceErrorHandler");
 const offersModel = require("../model/offersModel");
 const AppError = require("../utils/AppError");
 
-exports.getOffers = catchServiceError(async () => {
-  const offers = await offersModel.find();
+exports.getOffers = catchServiceError(async (query) => {
+  const offers = await offersModel.find(query);
   return offers;
 });
 
 exports.getOfferById = catchServiceError(async (id) => {
-  console.log(id);
   const offer = await offersModel.findById(id);
 
   if (!offer) {
@@ -23,6 +22,44 @@ exports.postOffer = catchServiceError(async (offerData) => {
   return newOffer;
 });
 
-exports.approveOffer = catchServiceError(async () => {});
+exports.approveOffer = catchServiceError(async (id) => {
+  const offerData = await offersModel.findById(id);
 
-exports.rejectOffer = catchServiceError(async () => {});
+  if (!offerData) {
+    throw new AppError("no offer found : Invalid Id", 404);
+  }
+
+  if (offerData.status == "approved") {
+    throw new AppError("Invalid Operation : already approved", 400);
+  }
+
+  if (offerData.status == "rejected") {
+    throw new AppError(
+      "Invalid Operation : rejected data cannot be approved",
+      400
+    );
+  }
+
+  offerData.status = "approved";
+  await offerData.save();
+});
+
+exports.rejectOffer = catchServiceError(async ({ id, rejectedReason }) => {
+  const offerData = await offersModel.findById(id);
+
+  if (!offerData) {
+    throw new AppError("no offer found : Invalid Id", 404);
+  }
+
+  if (offerData.status == "rejected") {
+    throw new AppError("Invalid Operation : already rejected", 400);
+  }
+
+  if (!rejectedReason) {
+    throw new AppError("please give a reason for rejecting the document", 400);
+  }
+
+  offerData.status = "rejected";
+  offerData.rejectedReason = rejectedReason;
+  await offerData.save();
+});

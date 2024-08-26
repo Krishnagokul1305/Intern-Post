@@ -1,9 +1,15 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OfferService {
+  private API = "http://127.0.0.1:3000";
+  private API_OFFERS = `${this.API}/offers`;
+
   offerLetters = [
     // {
     //   userName: 'John Doe',
@@ -86,10 +92,18 @@ export class OfferService {
       multipleOffers: true,
     },
   ];
-
-  constructor() {}
+  
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
   getOffers() {
-    return this.offerLetters;
+    return this.offerLetters; // Assuming offerLetters is a mock data array
+  }
+
+  postOffer(data: any): Observable<any> {
+    return this.http.post(this.API_OFFERS, data);
+  }
+
+  getUserOffers(userId: string): Observable<any> {
+    return this.http.get(`${this.API}/users/${userId}/offers`);
   }
 }

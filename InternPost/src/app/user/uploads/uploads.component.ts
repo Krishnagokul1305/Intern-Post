@@ -1,80 +1,134 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-uploads',
-//   standalone: true,
-//   imports: [],
-//   templateUrl: './uploads.component.html',
-//   styleUrl: './uploads.component.css'
-// })
-// export class UploadsComponent {
-// constructor(){
-//   console.log("user/uploads")
-// }
-// }
-
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { OfferService } from '../../services/offers/offer.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormArray,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { ToastrService } from 'ngx-toastr';
+import { TableComponent } from '../../components/table/table.component';
 
 @Component({
   selector: 'app-uploads',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TableComponent],
   templateUrl: './uploads.component.html',
-  styleUrl: './uploads.component.css',
+  styleUrls: ['./uploads.component.css'],
 })
-export class UploadsComponent {
-  form: FormGroup;
-  offers: FormArray;
 
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      name: ['', Validators.required],
-      rollNo: ['', Validators.required],
-      dob: ['', Validators.required],
-      phoneNo: ['', Validators.required],
-      workingAt: ['', Validators.required],
-      degree: ['', Validators.required],
-      numOffers: [0, Validators.required],
-      offers: this.fb.array([]),
+
+export class UploadsComponent implements OnInit {
+  form!: FormGroup;
+  showForm = false;
+  isLoading: boolean = false;
+  userId!: string;
+
+  files: { [key: string]: File | null } = {
+    internshipOfferLetter: null,
+    jobOfferLetter: null,
+    letterOfIntent: null,
+  };
+
+  statusToTagName: any = {
+    pending: 'bg-blue-500 text-white',
+    approved: 'bg-green-500 text-white',
+    rejected: 'bg-red-500 text-white',
+  };
+
+  userOffers: any;
+
+  constructor(
+    private fb: FormBuilder,
+    private offer: OfferService,
+    private auth: AuthService,
+    private toast: ToastrService
+  ) {
+   
+  }
+
+  ngOnInit(): void {
+    this.userId = this.auth.getUserData()._id;
+    this.isLoading = true;
+
+    this.offer.getUserOffers(this.userId).subscribe({
+      next: (data: any) => {
+        this.userOffers = data.data;
+        console.log(this.userOffers);
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error fetching user offers:', error);
+        this.isLoading = false;
+      }
     });
 
-    this.offers = this.form.get('offers') as FormArray;
+    // If you want to manage loading state manually
+    this.isLoading = true;
   }
 
-  onOffersChange() {
-    const numOffers = this.form.get('numOffers')?.value;
-    this.updateOffers(numOffers);
-  }
-
-  updateOffers(numOffers: number) {
-    this.offers.clear();
-    for (let i = 0; i < numOffers; i++) {
-      this.offers.push(
-        this.fb.group({
-          companyName: ['', Validators.required],
-          companyType: ['', Validators.required],
-          joiningDate: ['', Validators.required],
-          stipend: ['', Validators.required],
-          location: ['', Validators.required],
-          internshipOfferLetter: [null, Validators.required],
-          jobOfferLetter: [null, Validators.required],
-          letterOfIntend: [null, Validators.required],
-        })
-      );
+  onFileChange(event: Event, controlName: string) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.files[controlName] = input.files[0];
     }
-    console.log(this.offers.controls);
   }
-  
 
   onSubmit() {
-    console.log(this.form.value); 
+    if (this.form.valid) {
+      const formData = new FormData();
+      formData.append('companyName', this.form.get('companyName')?.value);
+      formData.append('companyType', this.form.get('companyType')?.value);
+      formData.append('joiningDate', this.form.get('joiningDate')?.value);
+      formData.append('stipend', this.form.get('stipend')?.value);
+      formData.append('location', this.form.get('location')?.value);
+      formData.append('student', this.userId);
+
+      Object.keys(this.files).forEach(key => {
+        if (this.files[key]) {
+          formData.append(key, this.files[key]!);
+        }
+      });
+
+      this.uploadOffer.mutate(formData);
+    }
+  }
+
+  uploadOffer = injectMutation(() => ({
+    mutationFn: (data: any) => this.offer.postOffer(data).toPromise(),
+    onMutate: () => {
+      this.isLoading = true;
+    },
+    onSuccess: (data: any) => {
+      console.log(data);
+      this.isLoading = false;
+      this.showForm = false;
+      this.form.reset();
+      this.files = {
+        internshipOfferLetter: null,
+        jobOfferLetter: null,
+        letterOfIntent: null,
+      };
+      this.toast.success('Offer uploaded successfully');
+    },
+    onError: (err) => {
+      this.isLoading = false;
+      console.log(err);
+      this.toast.error('Error uploading');
+    },
+  }));
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    
+    // Extract the components of the date
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+    const year = date.getFullYear();
+  
+    // Format as MM/DD/YYYY
+    return `${day}/${month}/${year}`;
+  }
+
+  toggleMenu(item: any) {
+    item.showMenu = !item.showMenu;
   }
 }

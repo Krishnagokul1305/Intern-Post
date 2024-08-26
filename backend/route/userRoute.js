@@ -8,19 +8,22 @@ const {
 } = require("../controller/userController");
 
 const express = require("express");
-const { uploads, resize } = require("../middleWare/fileUpload");
+const { uploadImage, resize } = require("../middleWare/fileUpload");
 const { isAuthenticated } = require("../middleWare/authentication");
+const offersRoute = require("./offersRoute");
 
 const userRoute = express.Router();
 
 userRoute.route("/").get(getAllUsers).post(createUser);
-userRoute.use(isAuthenticated);
+// userRoute.use(isAuthenticated);
 userRoute.route("/updatePassword").patch(updatePassword);
 
 userRoute
   .route("/:id")
   .get(getUserById)
-  .patch(uploads.single("avatar"), resize("user"), updateUser)
+  .patch(uploadImage.single("avatar"), resize("user"), updateUser)
   .delete(deleteUser);
+
+userRoute.use("/:userId/offers", offersRoute);
 
 module.exports = userRoute;
