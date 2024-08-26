@@ -1,8 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { injectMutation } from '@tanstack/angular-query-experimental';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-update',
@@ -17,21 +23,25 @@ export class UserUpdateComponent {
   user: any;
   fileName: string | null = null;
   isLoading: boolean = false;
-  isPasswordError:boolean=false
+  isPasswordError: boolean = false;
 
-  constructor(private fb: FormBuilder, private auth: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private toast: ToastrService
+  ) {
     this.user = auth.getUserData();
-    
+
     this.updateForm = this.fb.group({
       email: [this.user.email, [Validators.required, Validators.email]],
-      fullName: [this.user.fullName, [Validators.required, Validators.minLength(3)]],
+      fullName: [
+        this.user.fullName,
+        [Validators.required, Validators.minLength(3)],
+      ],
       avatar: [null],
       phoneNo: [
         this.user.phoneNo,
-        [
-          Validators.required,
-          Validators.pattern('^((\\+91-?)|0)?[0-9]{10}$'),
-        ],
+        [Validators.required, Validators.pattern('^((\\+91-?)|0)?[0-9]{10}$')],
       ],
     });
 
@@ -81,10 +91,12 @@ export class UserUpdateComponent {
     },
     onSuccess: (data: any) => {
       this.isLoading = false;
+      this.toast.success('updated details successfully');
       localStorage.setItem('user', JSON.stringify({ user: data.data }));
     },
     onError: (err) => {
       this.isLoading = false;
+      this.toast.error('error in updating the details');
     },
   }));
 
@@ -95,12 +107,13 @@ export class UserUpdateComponent {
     },
     onSuccess: (data: any) => {
       this.isLoading = false;
-      console.log(data);
+      this.toast.success('password updated successfully');
       localStorage.setItem('token', JSON.stringify({ token: data.token }));
     },
     onError: (err) => {
       this.isLoading = false;
       console.log(err);
+      this.toast.error('check the current password');
     },
   }));
 
@@ -120,13 +133,13 @@ export class UserUpdateComponent {
       formData.append('avatar', avatarFile);
     }
 
-    if (
-      this.updateForm.value.email === this.user.email &&
-      this.updateForm.value.fullName === this.user.fullName &&
-      this.updateForm.value.phoneNo === this.user.phoneNo
-    ) {
-      return;
-    }
+    // if (
+    //   this.updateForm.value.email === this.user.email &&
+    //   this.updateForm.value.fullName === this.user.fullName &&
+    //   this.updateForm.value.phoneNo === this.user.phoneNo
+    // ) {
+    //   return;
+    // }
 
     this.updateUser.mutate(formData);
   }

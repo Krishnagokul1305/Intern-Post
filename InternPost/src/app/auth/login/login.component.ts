@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CommonModule } from '@angular/common';
 import { SpinnerMiniComponent } from '../../components/spinner-mini/spinner-mini.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -23,12 +24,12 @@ import { SpinnerMiniComponent } from '../../components/spinner-mini/spinner-mini
 export class LoginComponent {
   loginForm: FormGroup;
   isLoading: boolean = false;
-  error: string = '';
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {
     this.loginForm = this.fb.group({
       email: [''],
@@ -39,30 +40,24 @@ export class LoginComponent {
   onLogin = injectMutation(() => ({
     mutationFn: (data) => this.auth.login(data).toPromise(),
     onMutate: () => {
-      this.error = '';
       this.isLoading = true;
     },
     onSuccess: (data: any) => {
+      this.toastr.success('logged in successfully');
       this.isLoading = false;
-      localStorage.setItem(
-        'user',
-        JSON.stringify({ user: data.data })
-      );
-      localStorage.setItem(
-        'token',
-        JSON.stringify({  token: data.token })
-      );
-     
+      localStorage.setItem('user', JSON.stringify({ user: data.data }));
+      localStorage.setItem('token', JSON.stringify({ token: data.token }));
+
       this.auth.user = data.data;
       if (data.data.role === 'student') {
         this.router.navigate(['/user/dashboard']);
-      } else if (data.data.role === 'admin') {
+      } else if (data.data.role === 'faculty') {
         this.router.navigate(['/admin/dashboard']);
       }
     },
     onError: (err) => {
       this.isLoading = false;
-      this.error = err.message;
+      this.toastr.error('Invalid email or Password');
     },
   }));
 

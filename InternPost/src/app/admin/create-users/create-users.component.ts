@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { AuthService } from '../../services/auth/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-users',
@@ -21,7 +22,11 @@ export class CreateUsersComponent {
   isStudent = false;
   isLoading: boolean = false;
 
-  constructor(private fb: FormBuilder, private auth: AuthService) {}
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private toast: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -51,12 +56,12 @@ export class CreateUsersComponent {
     onMutate: () => (this.isLoading = true),
     onSuccess: (data) => {
       this.isLoading = false;
-      console.log(data);
+      this.toast.success('user created successfully');
       this.signupForm.reset();
     },
     onError: (err) => {
       this.isLoading = false;
-      console.log(err);
+      this.toast.error('error in creating user');
     },
   }));
 

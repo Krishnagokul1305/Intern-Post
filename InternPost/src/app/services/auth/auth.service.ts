@@ -45,6 +45,7 @@ export class AuthService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.getToken()}`,
     });
+    console.log(this.getToken())
 
     const userId = this.getUserData()._id;
 

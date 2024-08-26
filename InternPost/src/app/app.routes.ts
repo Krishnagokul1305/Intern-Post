@@ -28,8 +28,12 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), HttpClientModule],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [AuthService, provideAngularQuery(new QueryClient())],
+  providers: [
+    AuthService,
+    provideAngularQuery(new QueryClient()),
+
+  ],
 })
 export class AppRoutingModule {}

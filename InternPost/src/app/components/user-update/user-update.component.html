@@ -118,7 +118,7 @@
           type="submit"
           class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
           [disabled]="isLoading"
-          (click)="(updateUser)"
+          (click)="userDetailsUpdate()"
         >
           {{ isLoading ? "updating..." : "Update Details" }}
         </button>
@@ -195,7 +195,7 @@
           type="submit"
           class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
           [disabled]="isLoading"
-          (click)="(updatePassword)"
+          (click)="userPasswordUpdate()"
         >
           {{ isLoading ? "updating..." : "Update Password " }}
         </button>
