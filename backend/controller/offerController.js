@@ -34,6 +34,7 @@ exports.createOffer = catchControllerError(async (req, res, next) => {
 
 exports.approveOffer = catchControllerError(async (req, res, next) => {
   const { id } = req.params;
+  console.log(id)
 
   await offersService.approveOffer(id);
 

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -95,15 +95,46 @@ export class OfferService {
   
   constructor(private http: HttpClient, private auth: AuthService) {}
 
-  getOffers() {
-    return this.offerLetters; // Assuming offerLetters is a mock data array
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.auth.getToken();
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+  }
+
+  getOffers(): Observable<any> {
+    return this.http.get(`${this.API_OFFERS}`, {
+      headers: this.getAuthHeaders(),
+    });
   }
 
   postOffer(data: any): Observable<any> {
-    return this.http.post(this.API_OFFERS, data);
+    return this.http.post(this.API_OFFERS, data, {
+      headers: this.getAuthHeaders(),
+    });
   }
 
   getUserOffers(userId: string): Observable<any> {
-    return this.http.get(`${this.API}/users/${userId}/offers`);
+    return this.http.get(`${this.API}/users/${userId}/offers`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  getOfferById(offerId: string): Observable<any> {
+    return this.http.get(`${this.API_OFFERS}/${offerId}`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  approveOffer(offerId: string): Observable<any> {
+    return this.http.patch(`${this.API_OFFERS}/approve/${offerId}`, {}, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  rejectOffer(offerId: string, data: any): Observable<any> {
+    return this.http.patch(`${this.API_OFFERS}/reject/${offerId}`, data, {
+      headers: this.getAuthHeaders(),
+    });
   }
 }

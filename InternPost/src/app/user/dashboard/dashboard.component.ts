@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
-import { ProfileCardComponent } from "../../components/profile-card/profile-card.component";
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ProfileCardComponent],
+  imports: [],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  constructor(){
+  user:any
+  constructor(private auth:AuthService){
     console.log("user/dashboard")
+    this.user=auth.getUserData()
   }
 }

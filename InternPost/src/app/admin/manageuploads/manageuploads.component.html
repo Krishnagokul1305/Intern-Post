@@ -18,83 +18,41 @@
       <th class="p-4 text-left">Roll No</th>
       <th class="p-4 text-left">Name</th>
       <th class="p-4 text-left">Email</th>
-      <th class="p-4 text-left">Status</th>
       <th class="p-4 text-left">Batch</th>
-      <th class="p-4 text-left">Dep</th>
+      <th class="p-4 text-left">Company</th>
+      <th class="p-4 text-left">Status</th>
       <th class="p-4 text-left"></th>
     </ng-container>
-    <ng-template #rowTemplate let-item>
+    <ng-template #rowTemplate let-offer>
       <tr class="border-b border-grey-700 text-sm text-grey-400">
-        <td class="py-6 px-4 font-semibold">{{ item.rollNo }}</td>
+        <td class="py-6 px-4 font-semibold">{{ offer.student.RegNo }}</td>
 
         <td class="p-4">
-          <span class="font-medium">{{ item.userName }}</span>
+          <span class="font-medium">{{ offer.student.fullName }}</span>
         </td>
 
         <td class="p-4">
-          <span class="font-medium">{{ "gokul@email.com" }}</span>
+          <span class="font-medium">{{ offer.student.email }}</span>
         </td>
 
+        <td class="p-4 font-medium">
+          {{ offer.student.batch }}
+        </td>
+
+        <td class="p-4 font-medium">
+          {{ offer.companyName }}
+        </td>
         <td class="p-4">
           <span
-            [ngClass]="statusToTagName[item.status]"
+            [ngClass]="statusToTagName[offer.status]"
             class="px-3 py-1 rounded-md"
-            >{{ item.status }}</span
+            >{{ offer.status }}</span
           >
         </td>
-
-        <td class="p-4 font-medium">
-          {{ item.batch }}
-        </td>
-
-        <td class="p-4 font-medium">
-          {{ item.department }}
-        </td>
-
         <td class="relative">
-          <button
-            class="px-3 py-1 bg-grey-800 text-white rounded-md focus:outline-none"
-            (click)="toggleMenu(item)"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 128 512"
-              class="w-[4px] h-[20px] fill-grey-200"
-            >
-              <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-              <path
-                d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z"
-              />
-            </svg>
+          <button class="text-white px-3 py-2 rounded-md bg-customBlue-700" (click)="goToUploads(offer._id)">
+            view
           </button>
-          <div
-            *ngIf="item.showMenu"
-            class="absolute right-0 z-50 mt-2 bg-white border border-gray-200 rounded-md shadow-lg"
-          >
-            <ul class="py-1">
-              <li>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                  >Edit</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                  >Delete</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                  >Details</a
-                >
-              </li>
-            </ul>
-          </div>
         </td>
       </tr>
     </ng-template>

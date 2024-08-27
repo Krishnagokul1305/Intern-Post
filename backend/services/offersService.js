@@ -24,7 +24,7 @@ exports.postOffer = catchServiceError(async (offerData) => {
 
 exports.approveOffer = catchServiceError(async (id) => {
   const offerData = await offersModel.findById(id);
-
+console.log(offerData)
   if (!offerData) {
     throw new AppError("no offer found : Invalid Id", 404);
   }

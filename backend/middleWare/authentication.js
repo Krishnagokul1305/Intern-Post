@@ -30,6 +30,8 @@ exports.isAuthenticated = catchControllerError(async (req, res, next) => {
     );
   }
 
+  console.log(user)
+
   req.user = user;
   next();
 });

@@ -123,6 +123,8 @@ export class UserUpdateComponent {
       return;
     }
 
+    if (this.isLoading) return; // Prevent multiple submissions
+
     const formData = new FormData();
     formData.append('email', this.updateForm.get('email')?.value);
     formData.append('fullName', this.updateForm.get('fullName')?.value);
@@ -133,14 +135,6 @@ export class UserUpdateComponent {
       formData.append('avatar', avatarFile);
     }
 
-    // if (
-    //   this.updateForm.value.email === this.user.email &&
-    //   this.updateForm.value.fullName === this.user.fullName &&
-    //   this.updateForm.value.phoneNo === this.user.phoneNo
-    // ) {
-    //   return;
-    // }
-
     this.updateUser.mutate(formData);
   }
 
@@ -149,7 +143,8 @@ export class UserUpdateComponent {
       this.passwordForm.markAllAsTouched();
       return;
     }
-
+    if (this.isLoading) return;
+    
     const data = {
       newPassword: this.passwordForm.value.new_password,
       currentPassword: this.passwordForm.value.old_password,

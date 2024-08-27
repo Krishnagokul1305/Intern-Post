@@ -15,7 +15,7 @@ const offersRoute = require("./offersRoute");
 const userRoute = express.Router();
 
 userRoute.route("/").get(getAllUsers).post(createUser);
-// userRoute.use(isAuthenticated);
+userRoute.use(isAuthenticated);
 userRoute.route("/updatePassword").patch(updatePassword);
 
 userRoute

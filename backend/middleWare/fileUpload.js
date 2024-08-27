@@ -46,7 +46,7 @@ exports.resize = (fileService) => async (req, res, next) => {
         .resize(500, 500)
         .toFormat("jpeg")
         .jpeg({ quality: 80 })
-        .toFile(path.join(__dirname, "../public/users", fileName));
+        .toFile(path.join(__dirname, "../public/user", fileName));
 
       req.body.avatar = fileName;
     }

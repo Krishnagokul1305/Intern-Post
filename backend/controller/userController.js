@@ -34,6 +34,7 @@ exports.updateUser = catchControllerError(async (req, res, next) => {
   if (req.body.password) {
     return next(new AppError("This route is not for updating password", 400));
   }
+  console.log(req.user)
   const updatedUser = await userService.updateUser({
     id: req.user.id,
     updateData: req.body,

@@ -1,11 +1,27 @@
 <div>
   <div class="grid gap-5 grid-cols-3">
-    <app-profile-card></app-profile-card>
+    <div
+      class="bg-grey-900 rounded-lg py-7 px-7 shadow-md flex items-center space-x-6 overflow-hidden h-[170px]"
+    >
+      <img
+        src="https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
+        alt=""
+        class="h-[85%] rounded-full"
+      />
+      <div class="">
+        <div class="text-xl font-bold text-grey-300">{{user.fullName}}</div>
+        <p class="mt-1 text-grey-400  text-sm">
+          <span>{{ user.email }}</span>
+        </p>
+      </div>
+    </div>
     <div
       class="bg-grey-900 rounded-lg py-7 px-7 shadow-md flex flex-col items-center justify-center space-y-3 overflow-hidden h-[170px] text-center text-grey-400"
     >
       <h1 class="font-bold text-xl text-grey-300">Student Dashboard</h1>
-      <p class="text-sm">Login: Student dashboard to view your individual performance.</p>
+      <p class="text-sm">
+        Login: Student dashboard to view your individual performance.
+      </p>
     </div>
     <div
       class="bg-grey-900 rounded-lg py-7 px-7 shadow-md flex-col flex items-center justify-center space-y-3 overflow-hidden h-[170px] text-center text-grey-400"

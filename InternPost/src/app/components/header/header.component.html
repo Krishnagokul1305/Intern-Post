@@ -17,12 +17,12 @@
 
     <div class="h-[45px] flex items-center gap-2">
       <img
-        src="assets/default.png"
+        [src]="user.avatar?'http://127.0.0.1:3000/user/'+user.avatar:'assets/default.png'"
         alt=""
-        class="h-full w-full object-contain"
+        class="h-full w-full rounded-full object-contain"
       />
       <div class="space-y-1">
-        <h1 class="capitalize font-bold text-grey-300 text-lg">
+        <h1 class="capitalize font-bold text-grey-300 text-lg whitespace-nowrap">
           {{ user.fullName }}
         </h1>
         <p class="text-xs text-grey-400 capitalize">{{ user.role }}</p>

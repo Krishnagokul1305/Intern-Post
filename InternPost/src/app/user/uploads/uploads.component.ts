@@ -1,11 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { OfferService } from '../../services/offers/offer.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
-import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+  injectQueryClient,
+} from '@tanstack/angular-query-experimental';
 import { ToastrService } from 'ngx-toastr';
 import { TableComponent } from '../../components/table/table.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-uploads',
@@ -14,13 +24,12 @@ import { TableComponent } from '../../components/table/table.component';
   templateUrl: './uploads.component.html',
   styleUrls: ['./uploads.component.css'],
 })
-
-
 export class UploadsComponent implements OnInit {
   form!: FormGroup;
   showForm = false;
   isLoading: boolean = false;
   userId!: string;
+  queryClient = injectQueryClient()
 
   files: { [key: string]: File | null } = {
     internshipOfferLetter: null,
@@ -36,33 +45,46 @@ export class UploadsComponent implements OnInit {
 
   userOffers: any;
 
+  // Use injectQuery within the constructor
+  fetchUserOffersQuery: any;
+
   constructor(
     private fb: FormBuilder,
     private offer: OfferService,
     private auth: AuthService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private router: Router
   ) {
-   
+    this.userId = this.auth.getUserData()._id;
+
+    this.fetchUserOffersQuery = injectQuery(() => ({
+      queryKey: ['userOffers', this.userId],
+      queryFn: async () => {
+        try {
+          const data = await this.offer.getUserOffers(this.userId).toPromise();
+          console.log('Fetched data:', data);
+          this.userOffers = data.data;
+          return data.data;
+        } catch (error) {
+          console.error('Error fetching user offers:', error);
+          throw error;
+        }
+      },
+    }));
+
   }
 
   ngOnInit(): void {
-    this.userId = this.auth.getUserData()._id;
-    this.isLoading = true;
-
-    this.offer.getUserOffers(this.userId).subscribe({
-      next: (data: any) => {
-        this.userOffers = data.data;
-        console.log(this.userOffers);
-        this.isLoading = false;
-      },
-      error: (error: any) => {
-        console.error('Error fetching user offers:', error);
-        this.isLoading = false;
-      }
+    this.form = this.fb.group({
+      companyName: ['', Validators.required],
+      companyType: ['Core', Validators.required],
+      joiningDate: ['', Validators.required],
+      stipend: ['', Validators.required],
+      location: ['', Validators.required],
+      internshipOfferLetter: [null],
+      jobOfferLetter: [null],
+      letterOfIntent: [null],
     });
-
-    // If you want to manage loading state manually
-    this.isLoading = true;
   }
 
   onFileChange(event: Event, controlName: string) {
@@ -82,23 +104,20 @@ export class UploadsComponent implements OnInit {
       formData.append('location', this.form.get('location')?.value);
       formData.append('student', this.userId);
 
-      Object.keys(this.files).forEach(key => {
+      Object.keys(this.files).forEach((key) => {
         if (this.files[key]) {
           formData.append(key, this.files[key]!);
         }
       });
-
+      this.isLoading = true;
       this.uploadOffer.mutate(formData);
     }
   }
 
-  uploadOffer = injectMutation(() => ({
+  uploadOffer = injectMutation((client) => ({
     mutationFn: (data: any) => this.offer.postOffer(data).toPromise(),
-    onMutate: () => {
-      this.isLoading = true;
-    },
     onSuccess: (data: any) => {
-      console.log(data);
+      client.invalidateQueries({ queryKey: ['userOffers'] })
       this.isLoading = false;
       this.showForm = false;
       this.form.reset();
@@ -118,16 +137,18 @@ export class UploadsComponent implements OnInit {
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    
-    // Extract the components of the date
     const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
-  
-    // Format as MM/DD/YYYY
+
     return `${day}/${month}/${year}`;
   }
 
+  goToUploads(id: string) {
+    console.log(id)
+    this.router.navigate([`user/uploads/${id}`]);
+  }
+  
   toggleMenu(item: any) {
     item.showMenu = !item.showMenu;
   }

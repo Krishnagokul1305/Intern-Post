@@ -1,0 +1,173 @@
+<div class="mx-auto p-6 bg-grey-900 text-grey-400 rounded-lg shadow-lg">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
+    <div>
+      <label class="block mb-1 text-sm font-medium">Full Name</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.student?.fullName }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">email</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.student?.email }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Register No</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.student?.RegNo }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Departement</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.student?.dep }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Batch</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.student?.batch || "N/A" }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Phone No</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.student?.phoneNo }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Company Name</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.companyName }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Company Type</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.companyType }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Joining Date</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.joiningDate }}
+      </p>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Stipend</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.stipend }}
+      </p>
+    </div>
+
+    <div class="col-span-2">
+      <label class="block mb-1 text-sm font-medium">Location</label>
+      <p class="bg-grey-800 px-4 py-3 rounded-md border border-grey-700">
+        {{ offer.location }}
+      </p>
+    </div>
+
+    <div class="col-span-2 flex items-center gap-4">
+      <label class="block mb-1 text-sm font-medium basis-[15%]"
+        >Internship Offer Letter</label
+      >
+      <a
+        [href]="'http://127.0.0.1:3000/offers/' + offer.internshipOfferLetter"
+        class="text-white px-3 py-2 rounded-md bg-customBlue-700"
+        >View File</a
+      >
+    </div>
+
+    <div class="col-span-2 flex items-center gap-4">
+      <label class="block mb-1 text-sm font-medium basis-[15%]"
+        >Job Offer Letter</label
+      >
+      <a
+        [href]="'http://127.0.0.1:3000/offers/' + offer.jobOfferLetter"
+        class="text-white px-3 py-2 rounded-md bg-customBlue-700"
+        >View File</a
+      >
+    </div>
+
+    <div class="col-span-2 flex items-center gap-4">
+      <label class="block mb-1 text-sm font-medium basis-[15%]"
+        >Letter of Intent</label
+      >
+      <a
+        [href]="'http://127.0.0.1:3000/offers/' + offer.letterOfIntent"
+        class="text-white px-3 py-2 rounded-md bg-customBlue-700"
+        >View File</a
+      >
+    </div>
+
+    <div>
+      <label class="block mb-1 text-sm font-medium">Status</label>
+      <p class="bg-grey-800 px-4 py-2 rounded-md border border-grey-700">
+        {{ offer.status }}
+      </p>
+    </div>
+
+    <div *ngIf="offer.status === 'rejected'">
+      <label class="block mb-1 text-sm font-medium">Rejected Reason</label>
+      <p class="bg-grey-800 px-4 py-2 rounded-md border border-grey-700">
+        {{ offer.rejectedReason }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Buttons for admin users -->
+  <div
+    class="mt-6 flex justify-end space-x-4"
+    *ngIf="offer.status == 'pending' && isFaculty"
+  >
+    <button
+      (click)="onApprove()"
+      class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md"
+    >
+      {{ approving ? "Approving..." : "Approve" }}
+    </button>
+
+    <app-modal [isVisible]="isModalVisible">
+      <div>
+        <form [formGroup]="rejectionForm" (submit)="onReject()">
+          <div class="mb-4">
+            <label for="reason" class="block text-gray-700 font-bold mb-2">
+              Reason for Rejection
+            </label>
+            <textarea
+              type="text"
+              id="reason"
+              formControlName="rejectedReason"
+              class="shadow appearance-none border rounded w-full min-h-[200px] py-3 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Enter reason"
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            class="bg-red-500 text-white px-4 py-2 block ms-auto rounded"
+            [disabled]="!rejectionForm.valid"
+          >
+            {{ rejecting ? "rejecting..." : "Confirm" }}
+          </button>
+        </form>
+      </div>
+    </app-modal>
+
+    <button
+      class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md"
+      (click)="isModalVisible = true"
+    >
+      Reject
+    </button>
+  </div>
+</div>

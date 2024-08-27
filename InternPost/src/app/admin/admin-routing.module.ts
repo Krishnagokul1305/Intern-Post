@@ -6,6 +6,7 @@ import { LayoutComponent } from '../components/layout/layout.component';
 import { authGuard } from '../guards/auth.guard';
 import { CreateUsersComponent } from './create-users/create-users.component';
 import { UserUpdateComponent } from '../components/user-update/user-update.component';
+import { OfferDetailsComponent } from '../components/offer-details/offer-details.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'uploads', component: ManageuploadsComponent },
+      { path: 'uploads/:id', component: OfferDetailsComponent },
       { path: 'details', component: UserUpdateComponent },
       { path: 'createUsers', component: CreateUsersComponent },
     ],

@@ -13,7 +13,7 @@ export class SidebarComponent {
   isStudent: boolean = true;
   constructor(private auth: AuthService, private router: Router) {
     const user: any = JSON.parse(localStorage.getItem('user') || '');
-    this.isStudent = user.user.role == 'student';
+    this.isStudent = user.user?.role == 'student';
     console.log(user, this.isStudent);
   }
 

@@ -15,7 +15,7 @@ const offerLetterSchema = new Schema({
   companyType: {
     type: String,
     required: [true, "Company Type is required"],
-    enum: ["core", "IT", "others"],
+    enum: ["Core", "IT", "Others"],
   },
   joiningDate: {
     type: Date,

@@ -4,7 +4,7 @@
       <th class="p-4 text-left">Roll No</th>
       <th class="p-4 text-left">Name</th>
 
-      <th class="p-4 text-left">company-Name</th>
+      <th class="p-4 text-left">company</th>
       <th class="p-4 text-left">type</th>
       <th class="p-4 text-left">joining-Date</th>
       <th class="p-4 text-left">Status</th>
@@ -32,15 +32,19 @@
 
         <td class="p-4">
           <span
-          class="px-3 py-1 rounded-md"
+            class="px-3 py-1 rounded-md"
             [ngClass]="statusToTagName[item.status]"
             >{{ item.status }}</span
           >
         </td>
 
         <td class="relative">
-         
-          
+          <button
+            class="text-white px-3 py-2 rounded-md bg-customBlue-700"
+            (click)="goToUploads(item._id)"
+          >
+            view
+          </button>
         </td>
       </tr>
     </ng-template>
@@ -79,9 +83,9 @@
             formControlName="companyType"
             class="mt-1 block w-full px-4 py-3 bg-grey-700 text-grey-100 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
           >
-            <option value="core">Core</option>
-            <option value="it">IT</option>
-            <option value="others">Others</option>
+            <option value="Core">Core</option>
+            <option value="IT">IT</option>
+            <option value="Others">Others</option>
           </select>
         </div>
       </div>
