@@ -1,0 +1,9 @@
+<div id="chart">
+    <apx-chart
+      [series]="chartOptions.series || []"
+      [chart]="chartOptions.chart || {  type: 'bar' }"
+      [xaxis]="chartOptions.xaxis || { categories: [] }"
+      [title]="chartOptions.title || { text: 'Default Title' }"
+    ></apx-chart>
+  </div>
+  

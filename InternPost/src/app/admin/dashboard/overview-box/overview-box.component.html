@@ -1,1 +1,41 @@
-<p>overview-box works!</p>
+<div>
+  <div class="grid gap-6 grid-cols-3">
+    <div
+      class="bg-grey-900 rounded-lg py-7 px-7 shadow-md flex flex-col space-x-6 overflow-hidden h-[150px] border-s-4 border-blue-500"
+    >
+      <h1 class="text-grey-300 text-xl font-extrabold tracking-wider">Total</h1>
+      <div class="h-full flex items-center justify-center">
+        <p class="text-grey-300 font-bold">
+          <span class="text-5xl tracking-widest">{{ overAllUploads }}</span>
+          Offers
+        </p>
+      </div>
+    </div>
+    <div
+      class="bg-grey-900 rounded-lg py-7 px-7 shadow-md flex flex-col space-y-3 overflow-hidden h-[150px] text-grey-400 border-s-4 border-green-500"
+    >
+      <h1 class="text-grey-300 text-xl font-extrabold tracking-wider">
+        Approved
+      </h1>
+      <div class="h-full flex items-center justify-center">
+        <p class="text-grey-300 font-bold">
+          <span class="text-5xl tracking-widest">{{ approved }}</span>
+          Offers
+        </p>
+      </div>
+    </div>
+    <div
+      class="bg-grey-900 rounded-lg py-7 px-7 shadow-md flex-col flex space-y-3 overflow-hidden h-[150px] text-grey-400 border-s-4 border-red-500"
+    >
+      <h1 class="text-grey-300 text-xl font-extrabold tracking-wider">
+        Rejected
+      </h1>
+      <div class="h-full flex items-center justify-center">
+        <p class="text-grey-300 font-bold">
+          <span class="text-5xl tracking-widest">{{ rejected }}</span>
+          Offers
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

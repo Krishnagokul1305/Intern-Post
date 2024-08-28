@@ -16,11 +16,19 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { TableComponent } from '../../components/table/table.component';
 import { Router } from '@angular/router';
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
+import { ModalComponent } from '../../components/modal/modal.component';
 
 @Component({
   selector: 'app-uploads',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, TableComponent],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    TableComponent,
+    SpinnerComponent,
+    ModalComponent,
+  ],
   templateUrl: './uploads.component.html',
   styleUrls: ['./uploads.component.css'],
 })
@@ -28,8 +36,9 @@ export class UploadsComponent implements OnInit {
   form!: FormGroup;
   showForm = false;
   isLoading: boolean = false;
+  pageLoading: boolean = false;
   userId!: string;
-  queryClient = injectQueryClient()
+  queryClient = injectQueryClient();
 
   files: { [key: string]: File | null } = {
     internshipOfferLetter: null,
@@ -60,18 +69,21 @@ export class UploadsComponent implements OnInit {
     this.fetchUserOffersQuery = injectQuery(() => ({
       queryKey: ['userOffers', this.userId],
       queryFn: async () => {
+        this.pageLoading = true;
         try {
           const data = await this.offer.getUserOffers(this.userId).toPromise();
           console.log('Fetched data:', data);
-          this.userOffers = data.data;
+          this.userOffers = data.data.offers;
+          this.pageLoading = false;
           return data.data;
         } catch (error) {
-          console.error('Error fetching user offers:', error);
-          throw error;
+          this.pageLoading = false;
+          const errorMessage =
+            (error as any)?.error?.error || 'An unknown error occurred';
+          this.toast.error(errorMessage);
         }
       },
     }));
-
   }
 
   ngOnInit(): void {
@@ -117,7 +129,7 @@ export class UploadsComponent implements OnInit {
   uploadOffer = injectMutation((client) => ({
     mutationFn: (data: any) => this.offer.postOffer(data).toPromise(),
     onSuccess: (data: any) => {
-      client.invalidateQueries({ queryKey: ['userOffers'] })
+      client.invalidateQueries({ queryKey: ['userOffers'] });
       this.isLoading = false;
       this.showForm = false;
       this.form.reset();
@@ -128,10 +140,11 @@ export class UploadsComponent implements OnInit {
       };
       this.toast.success('Offer uploaded successfully');
     },
-    onError: (err) => {
+    onError: (error) => {
       this.isLoading = false;
-      console.log(err);
-      this.toast.error('Error uploading');
+      const errorMessage =
+        (error as any)?.error?.error || 'An unknown error occurred';
+      this.toast.error(errorMessage);
     },
   }));
 
@@ -145,10 +158,10 @@ export class UploadsComponent implements OnInit {
   }
 
   goToUploads(id: string) {
-    console.log(id)
+    console.log(id);
     this.router.navigate([`user/uploads/${id}`]);
   }
-  
+
   toggleMenu(item: any) {
     item.showMenu = !item.showMenu;
   }

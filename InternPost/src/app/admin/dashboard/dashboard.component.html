@@ -1,1 +1,13 @@
-<p> admin dashboard works!</p>
+<div class="space-y-5 p-5">
+  <app-overview-box [stats]="chartData"></app-overview-box>
+
+  <div class="grid gap-6 grid-cols-3 text-grey-100">
+    <div class="bg-grey-900 rounded-lg py-10 flex items-center justify-center" ><app-chart [chartData]="chartData"></app-chart></div>
+    <div class="col-span-2 rounded-md h-full bg-grey-900">
+      <app-past-activities></app-past-activities>
+    </div>
+  </div>
+  <div class=" overflow-hidden mt-5 space-y-4">
+    <app-today-activities-table></app-today-activities-table>
+  </div>
+</div>

@@ -5,7 +5,6 @@ import { AuthService } from '../../services/auth/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CommonModule } from '@angular/common';
-import { SpinnerMiniComponent } from '../../components/spinner-mini/spinner-mini.component';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -16,7 +15,6 @@ import { ToastrService } from 'ngx-toastr';
     RouterLink,
     HttpClientModule,
     CommonModule,
-    SpinnerMiniComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',

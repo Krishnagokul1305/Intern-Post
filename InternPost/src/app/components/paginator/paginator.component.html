@@ -1,0 +1,28 @@
+<div class="flex items-center justify-between space-x-2">
+  <div class="text-grey-100 tracking-wide">
+    showing <span>1</span> - <span>10</span> of page <span>{{currentPage}} </span>/<span> {{totalPages}}</span>
+  </div>
+  <div class="space-x-3">
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="px-4 py-2 text-white bg-blue-500 rounded disabled:bg-gray-400"
+    >
+      Previous
+    </button>
+
+    <button
+    class="px-4 py-2 bg-blue-500 text-white rounded"
+  >
+    {{ currentPage }}
+  </button>
+
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="px-4 py-2 text-white bg-blue-500 rounded disabled:bg-gray-400"
+    >
+      Next
+    </button>
+  </div>
+</div>

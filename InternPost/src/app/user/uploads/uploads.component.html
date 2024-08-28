@@ -1,4 +1,5 @@
-<div class="px-6 py-5 space-y-5">
+<app-spinner [loading]="pageLoading"></app-spinner>
+<div class="px-6 py-5 space-y-5" *ngIf="!pageLoading">
   <app-table [data]="userOffers" [rowTemplate]="rowTemplate">
     <ng-container table-header>
       <th class="p-4 text-left">Roll No</th>
@@ -52,7 +53,7 @@
 
   <button
     (click)="showForm = !showForm"
-    class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
+    class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 block ms-auto"
   >
     {{ showForm ? "Close" : "Add" }}
   </button>

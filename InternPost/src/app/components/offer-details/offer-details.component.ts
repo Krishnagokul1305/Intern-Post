@@ -6,7 +6,7 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
 import {
   FormBuilder,
@@ -15,11 +15,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-offer-details',
   standalone: true,
-  imports: [CommonModule, ModalComponent, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ModalComponent,
+    ReactiveFormsModule,
+    SpinnerComponent,
+  ],
   templateUrl: './offer-details.component.html',
   styleUrl: './offer-details.component.css',
 })
@@ -30,6 +36,7 @@ export class OfferDetailsComponent {
   isModalVisible = false;
   rejectionForm: FormGroup;
   offerId: any;
+  isLoading: boolean = false;
   approving = false;
   rejecting = false;
   isFaculty!: boolean;
@@ -39,7 +46,8 @@ export class OfferDetailsComponent {
     private offerService: OfferService,
     private authService: AuthService,
     private fb: FormBuilder,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private location: Location
   ) {
     this.rejectionForm = this.fb.group({
       rejectedReason: ['', Validators.required],
@@ -53,16 +61,18 @@ export class OfferDetailsComponent {
       this.fetchUserOffersQuery = injectQuery(() => ({
         queryKey: ['userOffers', this.offerId],
         queryFn: async () => {
+          this.isLoading = true;
           try {
             const data = await this.offerService
               .getOfferById(this.offerId)
               .toPromise();
-            console.log('Fetched data:', data);
             this.offer = data.data;
+            this.isLoading = false;
             return data.data;
           } catch (error) {
-            console.error('Error fetching user offers:', error);
-            throw error;
+            this.isLoading = false;
+           toast.error("Problem in fetching the user data")
+            this.location.back();
           }
         },
       }));
@@ -78,10 +88,11 @@ export class OfferDetailsComponent {
       this.toast.success('approved successfully');
       client.invalidateQueries({ queryKey: ['userOffers', this.offerId] });
     },
-    onError: (err) => {
-      console.log(err);
+    onError: (error) => {
       this.approving = false;
-      this.toast.error('problem in approving');
+      const errorMessage =
+        (error as any)?.error?.error || 'An unknown error occurred';
+      this.toast.error(errorMessage);
     },
   }));
 
@@ -93,16 +104,16 @@ export class OfferDetailsComponent {
       this.toast.success('Rejected successfully');
       client.invalidateQueries({ queryKey: ['userOffers', this.offerId] });
     },
-    onError: (err) => {
-      console.log(err);
+    onError: (error) => {
       this.approving = false;
-      this.toast.error('Problem in rejecting');
+      const errorMessage =
+        (error as any)?.error?.error || 'An unknown error occurred';
+      this.toast.error(errorMessage);
     },
   }));
 
   onReject() {
     if (this.rejectionForm.valid) {
-      console.log(this.rejectionForm.value);
       this.isModalVisible = false;
       this.reject.mutate({ id: this.offerId, data: this.rejectionForm.value });
     }

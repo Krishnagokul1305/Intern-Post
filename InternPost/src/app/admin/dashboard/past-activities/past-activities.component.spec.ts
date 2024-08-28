@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SpinnerMiniComponent } from './spinner-mini.component';
+import { PastActivitiesComponent } from './past-activities.component';
 
-describe('SpinnerMiniComponent', () => {
-  let component: SpinnerMiniComponent;
-  let fixture: ComponentFixture<SpinnerMiniComponent>;
+describe('PastActivitiesComponent', () => {
+  let component: PastActivitiesComponent;
+  let fixture: ComponentFixture<PastActivitiesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SpinnerMiniComponent]
+      imports: [PastActivitiesComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SpinnerMiniComponent);
+    fixture = TestBed.createComponent(PastActivitiesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

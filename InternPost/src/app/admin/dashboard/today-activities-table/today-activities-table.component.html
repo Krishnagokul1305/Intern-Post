@@ -1,1 +1,41 @@
-<p>today-activities-table works!</p>
+<app-spinner [loading]="isLoading"></app-spinner>
+
+<app-table [data]="activities" [rowTemplate]="rowTemplate" *ngIf="!isLoading">
+    <ng-container table-header>
+      <th class="p-4 text-left">Roll No</th>
+      <th class="p-4 text-left">Name</th>
+      <th class="p-4 text-left">company</th>
+      <th class="p-4 text-left">type</th>
+      <th class="p-4 text-left">joining-Date</th>
+      <th class="p-4 text-left">Status</th>
+    </ng-container>
+    <ng-template #rowTemplate let-item>
+      <tr class="border-b border-grey-700 text-sm text-grey-400">
+        <td class="py-6 px-4 font-semibold">{{ item.student.RegNo }}</td>
+
+        <td class="p-4">
+          <span class="font-medium">{{ item.student.fullName }}</span>
+        </td>
+
+        <td class="p-4">
+          <span class="font-medium">{{ item.companyName }}</span>
+        </td>
+
+        <td class="p-4">
+          <span class="font-medium">{{ item.companyType }}</span>
+        </td>
+
+        <td class="p-4">
+          <span class="font-medium">{{formatDate( item.joiningDate) }}</span>
+        </td>
+
+        <td class="p-4">
+          <span
+            class="px-3 py-1 rounded-md"
+            [ngClass]="statusToTagName[item.status]"
+            >{{ item.status }}</span
+          >
+        </td>
+      </tr>
+    </ng-template>
+  </app-table>

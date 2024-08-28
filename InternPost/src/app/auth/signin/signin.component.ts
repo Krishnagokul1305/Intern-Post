@@ -10,8 +10,6 @@ import { AuthService } from '../../services/auth/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CommonModule } from '@angular/common';
-import { SpinnerMiniComponent } from '../../components/spinner-mini/spinner-mini.component';
-
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -20,7 +18,6 @@ import { SpinnerMiniComponent } from '../../components/spinner-mini/spinner-mini
     RouterLink,
     HttpClientModule,
     CommonModule,
-    SpinnerMiniComponent,
   ],
   templateUrl: './signin.component.html',
 })

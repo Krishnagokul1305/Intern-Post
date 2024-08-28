@@ -5,6 +5,9 @@ const {
   getOffer,
   approveOffer,
   rejectOffer,
+  offerOverallStats,
+  todayActivities,
+  getFiveDaysStats,
 } = require("../controller/offerController");
 const { uploadFiles, resize } = require("../middleWare/fileUpload");
 
@@ -22,6 +25,10 @@ offersRoute
     resize("offers"),
     createOffer
   );
+
+offersRoute.route("/overAll-stats").get(offerOverallStats);
+offersRoute.route("/todayActivities").get(todayActivities);
+offersRoute.route("/fivedaysActivities").get(getFiveDaysStats);
 
 offersRoute.route("/:id").get(getOffer);
 offersRoute.route("/approve/:id").patch(approveOffer);

@@ -1,10 +1,17 @@
 const catchServiceError = require("../utils/asyncServiceErrorHandler");
 const offersModel = require("../model/offersModel");
 const AppError = require("../utils/AppError");
+const ApiFeatures = require("../utils/ApiFeatures");
 
-exports.getOffers = catchServiceError(async (query) => {
-  const offers = await offersModel.find(query);
-  return offers;
+exports.getOffers = catchServiceError(async ({ query, params }) => {
+  const features = new ApiFeatures(offersModel.find(query), params)
+    .filter()
+    .limit()
+    .sort()
+    .page();
+  const offers = await features.query;
+  const totalPages = await offersModel.countDocuments();
+  return { offers, totalPages };
 });
 
 exports.getOfferById = catchServiceError(async (id) => {
@@ -24,7 +31,7 @@ exports.postOffer = catchServiceError(async (offerData) => {
 
 exports.approveOffer = catchServiceError(async (id) => {
   const offerData = await offersModel.findById(id);
-console.log(offerData)
+
   if (!offerData) {
     throw new AppError("no offer found : Invalid Id", 404);
   }
@@ -62,4 +69,74 @@ exports.rejectOffer = catchServiceError(async ({ id, rejectedReason }) => {
   offerData.status = "rejected";
   offerData.rejectedReason = rejectedReason;
   await offerData.save();
+});
+
+exports.totalStats = catchServiceError(async () => {
+  const stats = await offersModel.aggregate([
+    {
+      $group: {
+        _id: "$status",
+        total: { $sum: 1 },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        statusStats: { $push: { status: "$_id", total: "$total" } },
+        overallTotal: { $sum: "$total" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        statusStats: 1,
+        overallTotal: 1,
+      },
+    },
+  ]);
+
+  return stats[0];
+});
+
+exports.todayActivities = catchServiceError(async () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set to the start of the day
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1); // Set to the start of the next day
+
+  const query = {
+    updatedAt: { $gte: today, $lt: tomorrow },
+    status: { $in: ["approved", "rejected"] },
+  };
+
+  const todayactivities = await offersModel.find(query).limit(5);
+
+  return todayactivities;
+});
+
+exports.fiveDaysStats = catchServiceError(async () => {
+  const fiveDaysBefore = new Date();
+  fiveDaysBefore.setDate(fiveDaysBefore.getDate() - 5);
+
+  const stats = await offersModel.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: fiveDaysBefore },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+        },
+        uploads: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { _id: 1 }, // Optional: Sort by date
+    },
+  ]);
+
+  return stats;
 });

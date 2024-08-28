@@ -102,10 +102,26 @@ export class OfferService {
     });
   }
 
-  getOffers(): Observable<any> {
-    return this.http.get(`${this.API_OFFERS}`, {
-      headers: this.getAuthHeaders(),
-    });
+  getOffers(page: number, pageSize: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    const params = {
+      page: page.toString(),
+      limit: pageSize.toString()
+    };
+
+    return this.http.get<any>(this.API_OFFERS, { headers, params });
+  }
+
+  getOfferStats(): Observable<any> {
+    return this.http.get(`${this.API_OFFERS}/overAll-stats`);
+  }
+
+  getTodayActivities(): Observable<any> {
+    return this.http.get(`${this.API_OFFERS}/todayActivities`);
+  }
+
+  getPastActivitiesStats(): Observable<any> {
+    return this.http.get(`${this.API_OFFERS}/fivedaysActivities`);
   }
 
   postOffer(data: any): Observable<any> {

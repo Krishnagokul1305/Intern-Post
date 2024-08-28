@@ -7,6 +7,8 @@ import {
   provideAngularQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
+import { NgApexchartsModule } from 'ng-apexcharts';
+
 
 export const routes: Routes = [
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
@@ -28,7 +30,7 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes),NgApexchartsModule],
   exports: [RouterModule],
   providers: [
     AuthService,

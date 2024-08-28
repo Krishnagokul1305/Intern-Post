@@ -94,9 +94,11 @@ export class UserUpdateComponent {
       this.toast.success('updated details successfully');
       localStorage.setItem('user', JSON.stringify({ user: data.data }));
     },
-    onError: (err) => {
+    onError: (error) => {
       this.isLoading = false;
-      this.toast.error('error in updating the details');
+      const errorMessage =
+        (error as any)?.error?.error || 'An unknown error occurred';
+      this.toast.error(errorMessage);
     },
   }));
 
@@ -110,10 +112,11 @@ export class UserUpdateComponent {
       this.toast.success('password updated successfully');
       localStorage.setItem('token', JSON.stringify({ token: data.token }));
     },
-    onError: (err) => {
+    onError: (error) => {
       this.isLoading = false;
-      console.log(err);
-      this.toast.error('check the current password');
+      const errorMessage =
+        (error as any)?.error?.error || 'An unknown error occurred';
+      this.toast.error(errorMessage);
     },
   }));
 
@@ -144,7 +147,7 @@ export class UserUpdateComponent {
       return;
     }
     if (this.isLoading) return;
-    
+
     const data = {
       newPassword: this.passwordForm.value.new_password,
       currentPassword: this.passwordForm.value.old_password,

@@ -7,11 +7,14 @@ exports.getAllOffers = catchControllerError(async (req, res, next) => {
     query = { student: req.params.userId };
   }
 
-  const offers = await offersService.getOffers(query);
+  let params=req.query
+  console.log(req.query)
+
+  const offers = await offersService.getOffers({query,params});
   res.status(200).json({
     status: "success",
     results: offers.length,
-    data: offers,
+    data: { ...offers },
   });
 });
 
@@ -34,7 +37,7 @@ exports.createOffer = catchControllerError(async (req, res, next) => {
 
 exports.approveOffer = catchControllerError(async (req, res, next) => {
   const { id } = req.params;
-  console.log(id)
+  console.log(id);
 
   await offersService.approveOffer(id);
 
@@ -55,5 +58,33 @@ exports.rejectOffer = catchControllerError(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "rejected",
+  });
+});
+
+exports.offerTodayStats = catchControllerError(async (req, res, next) => {});
+
+exports.offerOverallStats = catchControllerError(async (req, res, next) => {
+  const stats = await offersService.totalStats();
+  res.status(200).json({
+    status: "success",
+    data: stats,
+  });
+});
+
+exports.todayActivities = catchControllerError(async (req, res, next) => {
+  const activites = await offersService.todayActivities();
+  res.status(200).json({
+    status: "success",
+    result: activites.length,
+    data: activites,
+  });
+});
+
+exports.getFiveDaysStats = catchControllerError(async (req, res, next) => {
+  const stats = await offersService.fiveDaysStats();
+  res.status(200).json({
+    status: "success",
+    result: stats.length,
+    data: stats,
   });
 });
